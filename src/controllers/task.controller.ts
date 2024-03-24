@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete } from '@nestjs/common';
 
 @Controller()
-export class TasksContorller {
+export class TaskContorller {
   /* POST */
   @Post('/user/:id/project/:id/new-task')
   addNewTask() {}
