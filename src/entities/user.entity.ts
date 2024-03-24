@@ -3,17 +3,17 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  user_id: number;
 
   @Column()
-  name: string;
+  username: string;
 
-  @Column()
-  users: number[];
+  @Column('int', { array: true })
+  other_user_ids: number[];
 
-  @Column()
-  projects: number[];
+  @Column('int', { array: true })
+  project_ids: number[];
 
-  @Column()
-  tasks: number[];
+  @Column('int', { array: true })
+  task_ids: number[];
 }

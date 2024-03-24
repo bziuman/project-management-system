@@ -3,20 +3,26 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class ProjectEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  project_id: number;
 
   @Column()
-  titile: string;
+  project_name: string;
 
   @Column()
   description: string;
 
   @Column()
+  progres: number;
+
+  @Column()
   status: string;
 
-  @Column()
-  executor: number;
+  @Column('int', { array: true })
+  user_ids: number[];
 
-  @Column()
-  progres: number;
+  @Column('int', { array: true })
+  tasks: number[];
+
+  @Column('json', { array: true })
+  comments: object[];
 }

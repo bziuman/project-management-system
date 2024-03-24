@@ -3,10 +3,10 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class TaskEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  task_id: number;
 
   @Column()
-  title: string;
+  task_name: string;
 
   @Column()
   description: string;
@@ -15,8 +15,11 @@ export class TaskEntity {
   status: string;
 
   @Column()
-  executor: number;
+  progres: number;
 
   @Column()
-  progres: number;
+  user_id: number;
+
+  @Column('json', { array: true })
+  comments: object[];
 }
