@@ -1,4 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UserEntity } from './user.entity';
+import { MemberEntity } from './member.entity';
+import { TaskEntity } from './task.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity()
 export class ProjectEntity {
@@ -8,21 +18,18 @@ export class ProjectEntity {
   @Column()
   project_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
-  @Column()
-  progres: number;
+  @ManyToOne(() => UserEntity, (user) => user.projects)
+  user: UserEntity;
 
-  @Column()
-  status: string;
+  @OneToMany(() => TaskEntity, (task) => task.project)
+  tasks: TaskEntity[];
 
-  @Column('int', { array: true })
-  user_ids: number[];
+  @OneToMany(() => MemberEntity, (projectMember) => projectMember.project)
+  members: MemberEntity[];
 
-  @Column('int', { array: true })
-  tasks: number[];
-
-  @Column('json', { array: true })
-  comments: object[];
+  @OneToMany(() => CommentEntity, (comment) => comment.project)
+  comments: CommentEntity;
 }

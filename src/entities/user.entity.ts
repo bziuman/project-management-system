@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { TaskEntity } from './task.entity';
+import { ProjectEntity } from './project.entity';
+import { MemberEntity } from './member.entity';
+import { CommentEntity } from './comment.entity';
+import { FriendEntity } from './friend.entity';
 
 @Entity()
 export class UserEntity {
@@ -8,12 +13,21 @@ export class UserEntity {
   @Column()
   username: string;
 
-  @Column('int', { array: true })
-  other_user_ids: number[];
+  @Column()
+  password: string;
 
-  @Column('int', { array: true })
-  project_ids: number[];
+  @OneToMany(() => ProjectEntity, (project) => project.user)
+  projects: ProjectEntity[];
 
-  @Column('int', { array: true })
-  task_ids: number[];
+  @OneToMany(() => TaskEntity, (tasks) => tasks.assignee)
+  tasks: TaskEntity[];
+
+  @OneToMany(() => MemberEntity, (projectMember) => projectMember.user)
+  projectMembers: MemberEntity[];
+
+  @OneToMany(() => CommentEntity, (commnet) => commnet.user)
+  comments: CommentEntity[];
+
+  @OneToMany(() => FriendEntity, (friend) => friend.user)
+  friends: FriendEntity[];
 }

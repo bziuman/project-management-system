@@ -1,4 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { ProjectEntity } from './project.entity';
+import { UserEntity } from './user.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity()
 export class TaskEntity {
@@ -8,9 +11,19 @@ export class TaskEntity {
   @Column()
   task_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
+  @ManyToOne(() => ProjectEntity, (project) => project.tasks)
+  project: ProjectEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.tasks)
+  assignee: UserEntity;
+
+  @ManyToOne(() => CommentEntity, (comment) => comment.task)
+  comments: CommentEntity[];
+
+  /*
   @Column()
   status: string;
 
@@ -22,4 +35,5 @@ export class TaskEntity {
 
   @Column('json', { array: true })
   comments: object[];
+  */
 }
