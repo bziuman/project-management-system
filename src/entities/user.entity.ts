@@ -1,19 +1,33 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { TaskEntity } from './task.entity';
+import { ProjectEntity } from './project.entity';
+import { MemberEntity } from './member.entity';
+import { CommentEntity } from './comment.entity';
+import { FriendEntity } from './friend.entity';
 
 @Entity()
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  user_id: number;
 
   @Column()
-  name: string;
+  username: string;
 
   @Column()
-  users: number[];
+  password: string;
 
-  @Column()
-  projects: number[];
+  @OneToMany(() => ProjectEntity, (project) => project.user)
+  projects: ProjectEntity[];
 
-  @Column()
-  tasks: number[];
+  @OneToMany(() => TaskEntity, (tasks) => tasks.assignee)
+  tasks: TaskEntity[];
+
+  @OneToMany(() => MemberEntity, (projectMember) => projectMember.user)
+  projectMembers: MemberEntity[];
+
+  @OneToMany(() => CommentEntity, (commnet) => commnet.user)
+  comments: CommentEntity[];
+
+  @OneToMany(() => FriendEntity, (friend) => friend.user)
+  friends: FriendEntity[];
 }

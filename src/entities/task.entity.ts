@@ -1,22 +1,39 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { ProjectEntity } from './project.entity';
+import { UserEntity } from './user.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity()
 export class TaskEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  task_id: number;
 
   @Column()
-  title: string;
+  task_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
+  @ManyToOne(() => ProjectEntity, (project) => project.tasks)
+  project: ProjectEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.tasks)
+  assignee: UserEntity;
+
+  @ManyToOne(() => CommentEntity, (comment) => comment.task)
+  comments: CommentEntity[];
+
+  /*
   @Column()
   status: string;
 
   @Column()
-  executor: number;
+  progres: number;
 
   @Column()
-  progres: number;
+  user_id: number;
+
+  @Column('json', { array: true })
+  comments: object[];
+  */
 }

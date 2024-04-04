@@ -1,50 +1,162 @@
-import { Controller, Get, Post, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
+import { NewProjectDto } from 'src/dto/new-project.dto';
+import { ProjectIdsDto } from 'src/dto/project.ids';
+import { UpdateProjectDto } from 'src/dto/update-project.dto';
+import { ProjectEntity } from 'src/entities/project.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
 
-@Controller()
+import { ProjectService } from 'src/services/project.service';
+
+@UseGuards(AuthGuard)
+@Controller('/:userId/projects')
 export class ProjectController {
-  /* POST */
-  @Post('/user/:id/create-new-project')
-  createProject() {}
+  constructor(private projectService: ProjectService) {}
 
-  @Post('/user/:id/project/:id/project-comments')
-  createProjectComments() {}
+  /* POST */
+  @Post()
+  async createProject(
+    @Param('userId') userId: number,
+    @Body() projectData: NewProjectDto,
+  ): Promise<ProjectEntity> {
+    return await this.projectService.createProject(userId, projectData);
+  }
 
   /* GET */
-  @Get('/user/:id/project-name/:id/give-all-user')
+  @Get()
+  async getProjects(@Param() ids: ProjectIdsDto): Promise<object> {
+    return await this.projectService.getProjects(ids);
+  }
+
+  @Get('/:projectId')
+  async getProject(@Param() ids: ProjectIdsDto): Promise<object> {
+    return await this.projectService.getProject(ids);
+  }
+
+  /*  PUT */
+  @Put('/:projectId')
+  async updateProject(
+    @Param() ids: ProjectIdsDto,
+    @Body() projectData: UpdateProjectDto,
+  ): Promise<object> {
+    return await this.projectService.updateProject(ids, projectData);
+  }
+
+  @Delete('/:projectId')
+  async deleteProject(@Param() ids: ProjectIdsDto): Promise<object> {
+    return this.projectService.deleteProject(ids);
+  }
+
+  /*
+  @Post('/project/project_comments/')
+  async createProjectComments(
+    @Query('id') projectId: number,
+    @Body()
+    commentData: {
+      from: number;
+      msg: string;
+    },
+  ) {
+    return await this.projectService.createNewProjectComments(
+      projectId,
+      commentData.from,
+      commentData.msg,
+    );
+  }
+
+  /* GET */
+  /*
+  @Get('/project-name/:id/give-all-user')
   getAllUserInTask() {}
 
-  @Get('/user/:id/project/:id')
-  getProject() {}
+  @Get('/project/:id')
+  async getProject(@Query('id') id: number) {
+    return this.projectService.getProject(id);
+  }
 
-  @Get('/user/:id/project/:id/get-all-user')
-  getAllUser() {}
+  @Get('/project/:id/get-all-user')
+  async getAllUser(@Query('id') id: number) {
+    return await this.projectService.getAllUserProject(id);
+  }
 
-  @Get('/user/:id/project/:id/progres-of-the-project-tasks')
-  getProgresProjectTasks() {}
+  //@Get('/user/:id/project/:id/progres-of-the-project-tasks')
+  //getProgresProjectTasks() {}
 
-  @Get('/user/:id/project/:id/statistic-of-project')
-  getStatisticProject() {}
+  @Get('/project/:id/statistic-of-project')
+  async getStatisticProject(@Query('id') projectId: number) {
+    //return await this.projectService.getStatisticProject(projectId);
+  }
 
-  @Get('/user/:id/project/:id/project-comments')
-  getAllProjectComments() {}
+  @Get('/project/:id/project-comments')
+  async getAllProjectComments(@Query('id') projectId: number) {
+    return await this.projectService.getAllProjectComments(projectId);
+  }
+  */
 
   /* PATCH */
-  @Patch('/user/:id/project/:id/add-user')
-  addUserToProject() {}
+  /*
+  @Patch('/project/:id/add-user')
+  async addUserToProject(
+    @Query('id') projectId: number,
+    @Body() userId: number,
+  ) {
+    return this.projectService.addUserToProject(projectId, userId);
+  }
+  */
 
-  @Patch('/user/:id/project/:id/give-task')
-  giveTaskToUser() {}
-
-  @Patch('/user/:id/project/:id/project-comments/:id')
-  patchProjectComment() {}
-
+  //@Patch('/user/:id/project/:id/give-task')
+  //giveTaskToUser() {}
+  /*
+  @Patch('/project/:id/project-comments/new-comment/')
+  async addProjectComments(
+    @Query('id') projectId: number,
+    @Body() bodyData: { from: number; to: number; msg: string },
+  ) {
+    return await this.projectService.addProjectComments(
+      projectId,
+      bodyData.from,
+      bodyData.to,
+      bodyData.msg,
+    );
+  }
+*/
   /* DELETE */
-  @Delete('/user/:id/delete-project/:id')
-  deleteProject() {}
-
-  @Delete('/user/:id/project/:id/delete-user')
-  deleteUserFromProject() {}
-
-  @Delete('/user/:id/project/:id/project-comments/:id')
-  deleteProjectComment() {}
+  /*
+  @Delete('/project/:id/delete-project/')
+  async deleteProject(@Query('id') projectId: number) {
+    return await this.projectService.deleteProject(projectId);
+  }
+*/
+  //@Delete('/project/:id/delete-user')
+  //deleteUserFromProject() {}
+  /*
+  @Delete('/project/:id/user-delete')
+  async deleteUserFromProject(
+    @Query('id') projectId: number,
+    @Body() userId: number,
+  ) {
+    return await this.projectService.deleteUserFromProject(projectId, userId);
+  }
+  */
+  /*
+  @Delete()
+  @Delete('project/:id/project-comments/')
+  async deleteProjectComment(
+    @Query('id') id: number,
+    @Body() bodyData: { comment_id: number },
+  ) {
+    return await this.projectService.deleteProjectComment(
+      id,
+      bodyData.comment_id,
+    );
+  }
+  */
 }
