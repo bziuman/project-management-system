@@ -3,13 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user.module';
 import { ProjectModule } from './modules/project.module';
 import { TaskModule } from './modules/task.module';
-import { UserService } from './services/user.service';
-import { ProjectService } from './services/project.service';
-import { TaskService } from './services/task.service';
-import { UserController } from './controllers/user.controller';
-import { ProjectCommentDto } from './dto/comment.dto';
-import { TaskContorller } from './controllers/task.controller';
-import { ProjectController } from './controllers/project.controller';
+import { AuthModule } from './modules/auth.module';
+import { CommentModule } from './modules/comment.module';
+import { MemberModule } from './modules/member.module';
 
 @Module({
   imports: [
@@ -23,9 +19,12 @@ import { ProjectController } from './controllers/project.controller';
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    AuthModule,
     UserModule,
     ProjectModule,
     TaskModule,
+    CommentModule,
+    MemberModule,
   ],
 })
 export class AppModule {}
