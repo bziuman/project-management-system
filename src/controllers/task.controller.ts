@@ -1,41 +1,57 @@
-import { Controller, Get, Post, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
+import { TaskIdsDto } from 'src/dto/task-ids.dto';
+import { CreateTaskDto } from 'src/dto/create-task.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { TaskService } from 'src/services/task.service';
+import { TaskDto } from 'src/dto/task.dto';
 
-@Controller()
+@UseGuards(AuthGuard)
+@Controller('/:userId/projects/:projectId/tasks')
 export class TaskContorller {
-  /* POST */
-  @Post('/user/:id/project/:id/new-task')
-  addNewTask() {}
+  constructor(private readonly taskService: TaskService) {}
 
-  @Post('/user/:id/project/:id/task/:id/task-comments')
-  createTaskComments() {}
+  /* POST */
+  @Post()
+  async createTask(
+    @Param() ids: TaskIdsDto,
+    @Body()
+    taskData: CreateTaskDto,
+  ): Promise<object> {
+    return await this.taskService.createTask(ids, taskData);
+  }
 
   /* GET */
-  @Get('/user/:id/project-name/:id/get-all-tasks')
-  getAllTasks() {}
+  @Get()
+  async getAllTasks(@Param() ids: TaskIdsDto): Promise<object> {
+    return await this.taskService.getAllTasks(ids);
+  }
+  @Get('/:taskId')
+  async getTaskInfo(@Param() ids: TaskIdsDto): Promise<object> {
+    return this.taskService.getTaskInfo(ids);
+  }
 
-  @Get('/user/:id/project/:id/task/:id/task-comments')
-  getAllTaskComments() {}
+  /* PATCH&PUT*/
 
-  /* PATCH */
-  @Patch('/user/:id/project/:id/task-comments/:id')
-  patchTaskComment() {}
-
-  @Patch('/user/:id/project/:id/task/:id/completed-task')
-  patchCompletedTask() {}
-
-  @Patch('/user/:id/project/:id/task/:id/pause-task')
-  patchPauseTask() {}
-
-  @Patch('/user/:id/project/:id/task/:id/resume-task')
-  patchResumeTask() {}
-
-  @Patch('/user/:id/project/:id/task/:id/reject-task')
-  patchRejectTask() {}
+  @Put('/:taskId')
+  async updateTask(
+    @Param() ids: TaskIdsDto,
+    @Body() taskData: TaskDto,
+  ): Promise<object> {
+    return await this.taskService.updateTask(ids, taskData);
+  }
 
   /* DELETE */
-  @Delete('/user/:id/project/:id/delete-task')
-  deleteTask() {}
-
-  @Delete('/user/:id/project/:id/task-comments/:id')
-  deleteTaskComment() {}
+  @Delete('/:taskId')
+  async deleteTask(@Param() ids: TaskIdsDto): Promise<object> {
+    return this.taskService.deleteTask(ids);
+  }
 }
