@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
+import { UpdateUserDto } from 'src/dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -10,17 +11,42 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(): Promise<UserEntity> {
-    const user = new UserEntity();
-    user.username = 'Bohdan';
-    user.other_user_ids = [2, 3];
-    user.project_ids = [0, 1];
-    user.task_ids = [10, 100];
-
-    return await this.userRepository.save(user);
+  async getUserInfo(u_id: number): Promise<object> {
+    const user = await this.userRepository.findOne({
+      where: { user_id: u_id },
+      relations: ['projects', 'tasks', 'projectMembers', 'comments', 'friends'],
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { status: 'success', user: user };
   }
 
-  getUserInfo() {}
+  async updateUserData(userId: number, updateUserData: UpdateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: { user_id: userId },
+    });
 
-  getAllProject() {}
+    user.username = updateUserData.username;
+
+    await this.userRepository.save(user);
+    return { msg: 'Seccessful update user data' };
+  }
+
+  async deleteUser(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: { user_id: userId },
+    });
+
+    if (!user) {
+      return { msg: 'User doesnt exist' };
+    }
+
+    const deletedUser = await this.userRepository.delete(user);
+
+    if (!deletedUser) {
+      return { msg: deletedUser };
+    }
+    return { msg: 'User deleted successfully' };
+  }
 }
